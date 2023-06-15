@@ -3,36 +3,8 @@
 
 # 1. Installation
 
-## 1.1. edit composer.json
-
-Add the following lines into your composer.json file of your project!
-
-```json
-{
-    ...
-    "require": {
-        ...
-        "locr/csv-reader": "^1.0"
-    },
-    ...
-    "repositories": [
-        ...
-        {
-            "type": "vcs",
-            "url": "git@bitbucket.org:locr/php-base-table-reader.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@bitbucket.org:locr/php-csv-reader.git"
-        }
-    ]
-}
-```
-
-## 1.2. install composer dependency
-
 ```bash
-composer install
+composer require locr-company/csv-reader
 ```
 
 # 2. Development
@@ -40,8 +12,7 @@ composer install
 Clone the repository
 
 ```bash
-git clone git@bitbucket.org:locr/php-csv-reader.git
+git clone git@github.com:locr-company/php-csv-reader.git
 cd php-csv-reader/.git/hooks && ln -s ../../git-hooks/* . && cd ../..
+composer install
 ```
-
-Install [Composer](https://getcomposer.org/)
