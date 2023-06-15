@@ -1,5 +1,8 @@
 ![php](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)
 [![codecov](https://codecov.io/gh/locr-company/php-csv-reader/branch/main/graph/badge.svg?token=bhxfQglKff)](https://codecov.io/gh/locr-company/php-csv-reader)
+![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-csv-reader/php.yml)
+![github_tag](https://img.shields.io/github/v/tag/locr-company/php-csv-reader)
+![packagist](https://img.shields.io/packagist/v/locr-company/csv-reader)
 
 # 1. Installation
 
