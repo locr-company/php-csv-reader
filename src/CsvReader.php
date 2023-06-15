@@ -422,9 +422,7 @@ class CsvReader extends BaseTableReader
             }
 
             if ($detectAndSetHeaderFields && $fieldNameHeaderIndex >= 0) {
-                foreach ($headerFields as $it) {
-                    $this->headerFields[] = $it;
-                }
+                $this->setHeaderFields($headerFields);
             }
         } else {
             foreach ($fields as $it) {
@@ -587,7 +585,7 @@ class CsvReader extends BaseTableReader
     {
         $fields = [];
         if ($this->readNextLine($fields)) {
-            $this->headerFields = $fields;
+            $this->setHeaderFields($fields);
         }
     }
 

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "55cef8fc9a5518aac982c51d14748648",
+    "content-hash": "b607b0b044b571c200ab612771cc7924",
     "packages": [
         {
             "name": "locr-company/base-table-reader",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/locr-company/php-base-table-reader.git",
-                "reference": "7e1f5215d60f960697b85f3322f9414abf65deaf"
+                "reference": "8996d4ad05a777df6f37ac3de5a473fabfcf7424"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/locr-company/php-base-table-reader/zipball/7e1f5215d60f960697b85f3322f9414abf65deaf",
-                "reference": "7e1f5215d60f960697b85f3322f9414abf65deaf",
+                "url": "https://api.github.com/repos/locr-company/php-base-table-reader/zipball/8996d4ad05a777df6f37ac3de5a473fabfcf7424",
+                "reference": "8996d4ad05a777df6f37ac3de5a473fabfcf7424",
                 "shasum": ""
             },
             "require": {
@@ -25,6 +25,7 @@
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.10",
+                "saggre/phpdocumentor-markdown": "^0.1",
                 "squizlabs/php_codesniffer": "^3.7"
             },
             "type": "library",
@@ -50,9 +51,9 @@
             ],
             "support": {
                 "issues": "https://github.com/locr-company/php-base-table-reader/issues",
-                "source": "https://github.com/locr-company/php-base-table-reader/tree/1.0.0"
+                "source": "https://github.com/locr-company/php-base-table-reader/tree/1.0.1"
             },
-            "time": "2023-06-14T12:15:44+00:00"
+            "time": "2023-06-15T14:22:24+00:00"
         }
     ],
     "packages-dev": [
