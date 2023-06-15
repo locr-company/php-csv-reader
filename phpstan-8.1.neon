@@ -1,0 +1,7 @@
+parameters:
+    phpVersion: 80100
+    level: 9
+    bootstrapFiles:
+        - vendor/autoload.php
+    paths:
+        - src
