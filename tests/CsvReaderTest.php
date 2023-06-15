@@ -222,6 +222,34 @@ final class CsvReaderTest extends TestCase
     }
 
     /**
+     * @covers ::loadFormatFile
+     */
+    public function testLoadFormatFileThatDoesntExists()
+    {
+        $this->expectExceptionMessage(
+            'Locr\Lib\CsvReader::loadFormatFile(string $filename, bool $detectAndSetHeaderFields = false): void' .
+                ' => error opening the format-file (\'unknown.file\')'
+        );
+
+        $csvReader = new CsvReader();
+        $csvReader->loadFormatFile('unknown.file');
+    }
+
+    /**
+     * @covers ::loadFormatString
+     */
+    public function testLoadFormatStringWithEmptyContent()
+    {
+        $this->expectExceptionMessage(
+            'Locr\Lib\CsvReader::loadFormatFile(string $filename, bool $detectAndSetHeaderFields = false): void' .
+                ' => error parsing the format-file'
+        );
+
+        $csvReader = new CsvReader();
+        $csvReader->loadFormatString('');
+    }
+
+    /**
      * @covers ::loadString
      * @covers ::loadFormatString
      * @covers ::readDatasets

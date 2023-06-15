@@ -330,7 +330,7 @@ class CsvReader extends BaseTableReader
      */
     public function loadFormatFile(string $filename, bool $detectAndSetHeaderFields = false): void
     {
-        $csvFile = fopen($filename, 'r');
+        $csvFile = @fopen($filename, 'r');
         if ($csvFile === false) {
             throw new \Exception(
                 __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
