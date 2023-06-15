@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace Locr\Lib;
 
 /**
- * @property-read string $BOMEncoding
- * @property-read int $BOMLength
- * @property-read array $FixedWidthFields
- * @property-read bool $IsLoaded
- * @property-read string $LineEnding
- * @property-read string $Separator
+ * fdgfsdpohfj
+ */
+
+/**
+ * @property-read string $BOMEncoding the detected BOM encoding (see https://de.wikipedia.org/wiki/Byte_Order_Mark)
+ * @property-read int $BOMLength the detected BOM length
+ * @property-read array<int, int> $FixedWidthFields an array of int's that where loaded by the loadFormatFile()-method
+ * @property-read bool $IsLoaded returns true, if the data was loaded and ready to read.
+ * @property-read string $LineEnding the detected lineending (\n => Unix/Linux/MacOS, \r => MacOS <= 9, \r\n => Windows)
+ * @property-read string $Separator the detected separator (",", ";", "\t" or "|")
  * @property-read bool $StripTags
  */
 class CsvReader extends BaseTableReader
@@ -43,16 +47,16 @@ class CsvReader extends BaseTableReader
      */
     private mixed $csvFile = null;
     /**
-     * @var int[]
-     * @see $FixedWidthFields
+     * @var array<int, int>
+     * @see self::FixedWidthFields
      */
     private array $fixedWidthFields = [];
     /**
-     * @see $LineEnding
+     * @see self::LineEnding
      */
     private string $lineEnding = '';
     /**
-     * @see $Separator
+     * @see self::Separator
      */
     private string $separator = ',';
     /**
@@ -65,11 +69,14 @@ class CsvReader extends BaseTableReader
         '|' => 0
     ];
     /**
-     * @see $StripTags
+     * @see self::StripTags
      */
     private bool $stripTags = false;
     private string $tempFilename = '';
 
+    /**
+     * @internal
+     */
     public function __destruct()
     {
         if (!is_null($this->csvFile)) {
@@ -83,6 +90,9 @@ class CsvReader extends BaseTableReader
         }
     }
 
+    /**
+     * @internal
+     */
     public function __get(string $name): mixed
     {
         return match ($name) {
@@ -97,6 +107,19 @@ class CsvReader extends BaseTableReader
         };
     }
 
+    /**
+     * This method detects the used separator of the given line, by counting the character
+     * (one of ",", ";", "\t" or "|") that is mostly used.
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\CsvReader;
+     *
+     * $separator = CsvReader::detectSeparator('foo;bar;baz');
+     * print $separator; // ;
+     * ```
+     */
     public static function detectSeparator(string $line): string
     {
         $csvSeparator = ',';
@@ -130,6 +153,18 @@ class CsvReader extends BaseTableReader
         return $csvSeparator;
     }
 
+    /**
+     * This loads a .csv file.
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\CsvReader;
+     *
+     * $csvReader = new CsvReader();
+     * $csvReader->loadFile('file.csv');
+     * ```
+     */
     public function loadFile(string $filename): void
     {
         $cmd = sprintf("file %s", escapeshellarg($filename));
@@ -237,7 +272,7 @@ class CsvReader extends BaseTableReader
             }
 
             $lineEnding[0] = $c;
-            if ($ordC === 10) { // Unix / maxOS
+            if ($ordC === 10) { // Unix / macOS
                 break;
             }
 
@@ -280,37 +315,19 @@ class CsvReader extends BaseTableReader
         fseek($csvFile, $this->bomLength);
     }
 
-    public function loadFormatString(string $content, bool $detectAndSetHeaderFields = false): void
-    {
-        $tempFilename = tempnam(sys_get_temp_dir(), 'csv');
-        if ($tempFilename === false) {
-            throw new \Exception(
-                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
-                    ' => temporary file could not been created.'
-            );
-        }
-        $fd = fopen($tempFilename, 'w');
-        if ($fd === false) {
-            throw new \Exception(
-                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
-                    ' => could not load csv-string.'
-            );
-        }
-
-        if (fwrite($fd, $content) === false) {
-            fclose($fd);
-            throw new \Exception(
-                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
-                    ' => could not write temporary csv-file.'
-            );
-        }
-        fclose($fd);
-
-        $this->loadFormatFile($tempFilename, $detectAndSetHeaderFields);
-
-        @unlink($tempFilename);
-    }
-
+    /**
+     * This loads a fixed-width definition of the .csv-file.
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\CsvReader;
+     *
+     * $csvReader = new CsvReader();
+     * $csvReader->loadFile('file.csv');
+     * $csvReader->loadFormatFile('file_format.csv');
+     * ```
+     */
     public function loadFormatFile(string $filename, bool $detectAndSetHeaderFields = false): void
     {
         $csvFile = fopen($filename, 'r');
@@ -425,6 +442,76 @@ class CsvReader extends BaseTableReader
         $this->fieldsCount = count($this->fixedWidthFields);
     }
 
+    /**
+     * This loads a fixed-width definition of the .csv-file.
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\CsvReader;
+     *
+     * $csvReader = new CsvReader();
+     * $csvReader->loadFile('file.csv');
+     * $csvReader->loadFormatString('5|10|10|5|3');
+     *
+     * // alternative format
+     * $csvFormat = "Fieldname|Length|Start|Stop\n";
+     * $csvFormat .= "id|3|1|3\n";
+     * $csvFormat .= "country|8|4|11\n";
+     * $csvFormat .= "city|13|12|24\n";
+     * $csvFormat .= "postal|7|25|31\n";
+     * $csvFormat .= "street|10|32|41\n";
+     * $csvFormat .= "house|5|42|46";
+     * $csvReader->loadFormatString($csvFormat, true);
+     * ```
+     */
+    public function loadFormatString(string $content, bool $detectAndSetHeaderFields = false): void
+    {
+        $tempFilename = tempnam(sys_get_temp_dir(), 'csv');
+        if ($tempFilename === false) {
+            throw new \Exception(
+                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
+                    ' => temporary file could not been created.'
+            );
+        }
+        $fd = fopen($tempFilename, 'w');
+        if ($fd === false) {
+            throw new \Exception(
+                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
+                    ' => could not load csv-string.'
+            );
+        }
+
+        if (fwrite($fd, $content) === false) {
+            fclose($fd);
+            throw new \Exception(
+                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
+                    ' => could not write temporary csv-file.'
+            );
+        }
+        fclose($fd);
+
+        $this->loadFormatFile($tempFilename, $detectAndSetHeaderFields);
+
+        @unlink($tempFilename);
+    }
+
+    /**
+     * This loads a csv by it's content.
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\CsvReader;
+     *
+     * $csvReader = new CsvReader();
+     * $csvReader->loadString('foo|bar|baz');
+     * $rows = $csvReader->readDatasets();
+     * print $rows[0][0]; // foo
+     * print $rows[0][1]; // bar
+     * print $rows[0][2]; // baz
+     * ```
+     */
     public function loadString(string $content): void
     {
         $tempFilename = tempnam(sys_get_temp_dir(), 'csv');
@@ -696,6 +783,21 @@ class CsvReader extends BaseTableReader
         return true;
     }
 
+    /**
+     * If set to true, html-tags were stripped away from the csv-content
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\CsvReader;
+     *
+     * $csvReader = new CsvReader();
+     * $csvReader->setStripTags(true);
+     * $csvReader->loadString('foo|bar|<hello>world<hello>');
+     * $rows = $csvReader->readDatasets();
+     * print $rows[0][2]; // world
+     * ```
+     */
     public function setStripTags(bool $stripTags): self
     {
         $this->stripTags = $stripTags;

@@ -1,3 +1,4 @@
 .phpunit.cache/
+docs/cache/
 test-results/
 vendor/
