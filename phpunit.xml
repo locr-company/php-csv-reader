@@ -7,10 +7,8 @@
   </testsuites>
   <coverage>
     <report>
-      <clover outputFile="test-results/phpunit.clover.xml"/>
+      <clover outputFile="test-results/clover.xml"/>
       <html outputDirectory="test-results/html"/>
-      <text outputFile="test-results/phpunit.txt"/>
-      <xml outputDirectory="test-results/phpunit"/>
     </report>
   </coverage>
   <source>
