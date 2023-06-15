@@ -7,7 +7,30 @@
 composer require locr-company/csv-reader
 ```
 
-# 2. Development
+# 2. How to use
+
+```php
+<?php
+
+use Locr\Lib\CsvReader;
+
+$csvReader = new CsvReader();
+$csvReader->loadFile('file.csv');
+$csvReader->setFirstLineIsHeader(true); // if the first line of the csv-file has column informations
+
+// read all rows at once
+$rows = $csvReader->readDataset();
+foreach ($rows as $row) {
+    print $row['column1'] . '|' . $row['column2'] . "\n";
+}
+
+// read rows one by one, if you expect a very large csv-file
+$csvReader->readDatasetsCallback(function (array $row, int $lineNumber) {
+    print $row['column1'] . '|' . $row['column2'] . "\n";
+});
+```
+
+# 3. Development
 
 Clone the repository
 

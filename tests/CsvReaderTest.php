@@ -172,7 +172,7 @@ final class CsvReaderTest extends TestCase
         $csvContent = implode("\n", $this->csvLines) . "\n";
         $csvReader->loadString($csvContent);
         $csvReader->setIgnoreEmptyLines(false);
-        $datasetsCount = $csvReader->readDatasetsCallback(function ($data) {
+        $datasetsCount = $csvReader->readDatasetsCallback(function (array $data) {
         });
 
         $this->assertEquals(6, $datasetsCount);
@@ -287,11 +287,13 @@ final class CsvReaderTest extends TestCase
         $csvReader->loadString($csvContent);
         $firstRow = ['id', 'country', 'city', 'postal', 'street', 'house'];
         $firstLineCallback = null;
-        $datasetsCallbacked = $csvReader->readDatasetsCallback(function ($row, $lineNumber) use (&$firstLineCallback) {
-            if ($lineNumber == 1) {
-                $firstLineCallback = $row;
+        $datasetsCallbacked = $csvReader->readDatasetsCallback(
+            function (array $row, int $lineNumber) use (&$firstLineCallback) {
+                if ($lineNumber == 1) {
+                    $firstLineCallback = $row;
+                }
             }
-        });
+        );
 
         $this->assertEquals(5, $datasetsCallbacked);
 
@@ -312,11 +314,13 @@ final class CsvReaderTest extends TestCase
         $csvReader->loadFormatString($this->prnFormat);
         $firstRow = ['id ', 'country ', 'city         ', 'postal ', 'street    ', 'house'];
         $firstLineCallback = null;
-        $datasetsCallbacked = $csvReader->readDatasetsCallback(function ($row, $lineNumber) use (&$firstLineCallback) {
-            if ($lineNumber == 1) {
-                $firstLineCallback = $row;
+        $datasetsCallbacked = $csvReader->readDatasetsCallback(
+            function (array $row, int $lineNumber) use (&$firstLineCallback) {
+                if ($lineNumber == 1) {
+                    $firstLineCallback = $row;
+                }
             }
-        });
+        );
 
         $this->assertEquals(5, $datasetsCallbacked);
 
@@ -579,7 +583,7 @@ final class CsvReaderTest extends TestCase
         $csvReader->loadString($csvContent);
         $csvReader->setHeaderFields(['id1', 'country2', '', 'postal4', '', 'house6']);
         $foundDataset = null;
-        $csvReader->readDatasetsCallback(function ($dataset) use (&$foundDataset) {
+        $csvReader->readDatasetsCallback(function (array $dataset) use (&$foundDataset) {
             $foundDataset = $dataset;
         }, 1, 1);
 
