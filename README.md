@@ -1,5 +1,5 @@
 ![php](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)
-[![codecov](https://codecov.io/bb/locr/php-csv-reader/branch/main/graph/badge.svg?token=OLLLKN9C6B)](https://codecov.io/bb/locr/php-csv-reader)
+[![codecov](https://codecov.io/gh/locr-company/php-csv-reader/branch/main/graph/badge.svg?token=bhxfQglKff)](https://codecov.io/gh/locr-company/php-csv-reader)
 
 # 1. Installation
 
