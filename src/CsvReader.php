@@ -65,7 +65,7 @@ class CsvReader extends BaseTableReader
     private array $separators = [
         ',' => 0,
         ';' => 0,
-        '	' => 0,
+        "\t" => 0,
         '|' => 0
     ];
     /**
@@ -126,14 +126,14 @@ class CsvReader extends BaseTableReader
         $separators = [
             ',' => 0,
             ';' => 0,
-            '	' => 0,
+            "\t" => 0,
             '|' => 0
         ];
 
         $lineStrlen = strlen($line);
         for ($i = 0; $i < $lineStrlen; $i++) {
             $char = $line[$i];
-            if ($char === ',' || $char === ';' || $char === '	' || $char === '|') {
+            if ($char === ',' || $char === ';' || $char === "\t" || $char === '|') {
                 $separators[$char]++;
             }
         }
@@ -262,7 +262,7 @@ class CsvReader extends BaseTableReader
         while (($c = fgetc($csvFile)) !== false) {
             $ordC = ord($c);
             if ($ordC !== 10 && $ordC !== 13) {
-                if ($c === ',' || $c === ';' || $c === '|' || $c === '	') {
+                if ($c === ',' || $c === ';' || $c === '|' || $c === "\t") {
                     $this->separators[$c]++;
                 }
                 continue;
