@@ -12,7 +12,7 @@ composer require locr-company/csv-reader
 
 # 2. How to use
 
-Here are the [Docs](docs/phpdoc/markdown/index.md).
+Here are the [Docs](https://locr-company.github.io/php-csv-reader/).
 
 ```php
 <?php
