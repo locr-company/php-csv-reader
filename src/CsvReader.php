@@ -597,15 +597,75 @@ class CsvReader extends BaseTableReader
      * @param string[] $fields
      * @param resource $csvFile
      */
-    private function readNextLineInternal(array &$fields, $csvFile, string $csvSeparator, string $lineEnding): bool
+    private function readFixedWidthFields(array &$fields, $csvFile, string $lineEnding): bool
     {
-        $fields = [];
+        $line = '';
+        while (($c = fgetc($csvFile)) !== false) {
+            $lineEndingReached = false;
+            if (isset($lineEnding[0]) && $c === $lineEnding[0]) {
+                if (isset($lineEnding[1])) {
+                    $nextChar = '';
+                    if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
+                        $lineEndingReached = true;
+                    }
+                    if (!$lineEndingReached) {
+                        fseek($csvFile, -1, SEEK_CUR);
+                    }
+                } else {
+                    $lineEndingReached = true;
+                }
+            }
+
+            if ($lineEndingReached) {
+                break;
+            }
+
+            $line .= $c;
+        }
+
+        if ($line === '') {
+            return false;
+        }
+
+        if (!mb_check_encoding($line, 'UTF-8')) {
+            $convertedLine = iconv('ISO-8859-1', 'UTF-8', $line);
+            if ($convertedLine !== false) {
+                $line = $convertedLine;
+            }
+        }
+
+        $start = 0;
+        foreach ($this->fixedWidthFields as $it) {
+            if ($start >= mb_strlen($line)) {
+                break;
+            }
+
+            $field = mb_substr($line, $start, $it);
+            $fields[] = $field;
+            $start += $it;
+        }
+
+        return true;
+    }
+
+     /**
+     * @param string[] $fields
+     * @param resource $csvFile
+     */
+    private function readVariableWidthFields(array &$fields, $csvFile, string $csvSeparator, string $lineEnding): bool
+    {
         $c = '';
         $lineEndingReached = false;
 
-        if (count($this->fixedWidthFields) > 0) {
-            $line = '';
-            while (($c = fgetc($csvFile)) !== false) {
+        $field = '';
+        $isQuoted = false;
+        while (($c = fgetc($csvFile)) !== false) {
+            if (strlen($field) === 0 && $c === '"' && !$isQuoted) {
+                $isQuoted = true;
+                continue;
+            }
+
+            if (!$isQuoted) {
                 $lineEndingReached = false;
                 if (isset($lineEnding[0]) && $c === $lineEnding[0]) {
                     if (isset($lineEnding[1])) {
@@ -621,140 +681,99 @@ class CsvReader extends BaseTableReader
                     }
                 }
 
-                if ($lineEndingReached) {
-                    break;
-                }
-
-                $line .= $c;
-            }
-
-            if ($line === '') {
-                return false;
-            }
-
-            if (!mb_check_encoding($line, 'UTF-8')) {
-                $convertedLine = iconv('ISO-8859-1', 'UTF-8', $line);
-                if ($convertedLine !== false) {
-                    $line = $convertedLine;
-                }
-            }
-
-            $start = 0;
-            foreach ($this->fixedWidthFields as $it) {
-                if ($start >= mb_strlen($line)) {
-                    break;
-                }
-
-                $field = mb_substr($line, $start, $it);
-                $fields[] = $field;
-                $start += $it;
-            }
-        } else {
-            $field = '';
-            $isQuoted = false;
-            while (($c = fgetc($csvFile)) !== false) {
-                if (strlen($field) === 0 && $c === '"' && !$isQuoted) {
-                    $isQuoted = true;
-                    continue;
-                }
-
-                if (!$isQuoted) {
-                    $lineEndingReached = false;
-                    if (isset($lineEnding[0]) && $c === $lineEnding[0]) {
-                        if (isset($lineEnding[1])) {
-                            $nextChar = '';
-                            if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
-                                $lineEndingReached = true;
-                            }
-                            if (!$lineEndingReached) {
-                                fseek($csvFile, -1, SEEK_CUR);
-                            }
-                        } else {
-                            $lineEndingReached = true;
-                        }
+                if ($c === $csvSeparator || $lineEndingReached) {
+                    if (!mb_check_encoding($field, 'UTF-8')) {
+                        $field = iconv('ISO-8859-1', 'UTF-8', $field);
                     }
-
-                    if ($c === $csvSeparator || $lineEndingReached) {
-                        if (!mb_check_encoding($field, 'UTF-8')) {
-                            $field = iconv('ISO-8859-1', 'UTF-8', $field);
-                        }
-                        $fields[] = $field;
-                        $field = '';
-                        if ($c === $csvSeparator) {
+                    $fields[] = $field;
+                    $field = '';
+                    if ($c === $csvSeparator) {
+                        continue;
+                    } elseif ($lineEndingReached) {
+                        break;
+                    }
+                }
+            } else {
+                if ($c === '"') {
+                    $nextChar = '';
+                    if (($nextChar = fgetc($csvFile)) !== false) {
+                        if ($nextChar === '"') {
+                            $field .= $c;
                             continue;
-                        } elseif ($lineEndingReached) {
-                            break;
-                        }
-                    }
-                } else {
-                    if ($c === '"') {
-                        $nextChar = '';
-                        if (($nextChar = fgetc($csvFile)) !== false) {
-                            if ($nextChar === '"') {
-                                $field .= $c;
-                                continue;
-                            } else {
-                                if (!mb_check_encoding($field, 'UTF-8')) {
-                                    $field = iconv('ISO-8859-1', 'UTF-8', $field);
-                                }
-                                $fields[] = $field;
-                                $field = '';
-                                $isQuoted = false;
+                        } else {
+                            if (!mb_check_encoding($field, 'UTF-8')) {
+                                $field = iconv('ISO-8859-1', 'UTF-8', $field);
+                            }
+                            $fields[] = $field;
+                            $field = '';
+                            $isQuoted = false;
 
-                                $lineEndingReached = false;
-                                if (isset($lineEnding[0]) && $nextChar === $lineEnding[0]) {
-                                    if (isset($lineEnding[1])) {
-                                        if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
-                                            $lineEndingReached = true;
-                                        }
-                                        if (!$lineEndingReached) {
-                                            fseek($csvFile, -1, SEEK_CUR);
-                                        }
-                                    } else {
+                            $lineEndingReached = false;
+                            if (isset($lineEnding[0]) && $nextChar === $lineEnding[0]) {
+                                if (isset($lineEnding[1])) {
+                                    if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
                                         $lineEndingReached = true;
                                     }
+                                    if (!$lineEndingReached) {
+                                        fseek($csvFile, -1, SEEK_CUR);
+                                    }
+                                } else {
+                                    $lineEndingReached = true;
                                 }
-                                if ($lineEndingReached) {
-                                    break;
-                                }
-                                continue;
                             }
-                        } else {
-                            break;
+                            if ($lineEndingReached) {
+                                break;
+                            }
+                            continue;
                         }
+                    } else {
+                        break;
                     }
                 }
-
-                $field .= $c;
             }
 
-            if (count($fields) === 1 && isset($fields[0])) {
-                $firstField = (string)$fields[0];
-                if (strlen($firstField) === 0) {
-                    return !$this->ignoreEmptyLines;
-                }
-            }
+            $field .= $c;
+        }
 
-            if ($field !== '') { // last line, last field
-                if (!mb_check_encoding($field, 'UTF-8')) {
-                    $field = iconv('ISO-8859-1', 'UTF-8', $field);
-                }
-                $fields[] = $field;
-                $field = '';
+        if (count($fields) === 1 && isset($fields[0])) {
+            $firstField = (string)$fields[0];
+            if (strlen($firstField) === 0) {
+                return !$this->ignoreEmptyLines;
             }
+        }
+
+        if ($field !== '') { // last line, last field
+            if (!mb_check_encoding($field, 'UTF-8')) {
+                $field = iconv('ISO-8859-1', 'UTF-8', $field);
+            }
+            $fields[] = $field;
+            $field = '';
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string[] $fields
+     * @param resource $csvFile
+     */
+    private function readNextLineInternal(array &$fields, $csvFile, string $csvSeparator, string $lineEnding): bool
+    {
+        $fields = [];
+
+        if (count($this->fixedWidthFields) > 0) {
+            if (!$this->readFixedWidthFields($fields, $csvFile, $lineEnding)) {
+                return false;
+            }
+        } elseif (!$this->readVariableWidthFields($fields, $csvFile, $csvSeparator, $lineEnding)) {
+            return false;
         }
 
         if (empty($fields)) {
             return false;
         }
 
-        if ($this->stripTags) {
-            foreach ($fields as $key => $value) {
-                if (is_string($value)) {
-                    $fields[$key] = strip_tags($value);
-                }
-            }
-        }
+        $this->stripTags($fields);
 
         return true;
     }
@@ -779,5 +798,21 @@ class CsvReader extends BaseTableReader
         $this->stripTags = $stripTags;
 
         return $this;
+    }
+
+    /**
+     * @param string[] $fields
+     */
+    private function stripTags(array &$fields): void
+    {
+        if (!$this->stripTags) {
+            return;
+        }
+
+        foreach ($fields as $key => $value) {
+            if (is_string($value)) {
+                $fields[$key] = strip_tags($value);
+            }
+        }
     }
 }
