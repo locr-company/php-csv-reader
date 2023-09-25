@@ -172,7 +172,9 @@ class CsvReader extends BaseTableReader
         $returnVar = -1;
         exec($cmd, $output, $returnVar);
         if ($returnVar !== 0) {
-            throw new \Exception(__METHOD__ . "(string \$filename): void => error reading the file ('{$filename}')");
+            throw new CsvReaderException(
+                __METHOD__ . "(string \$filename): void => error reading the file ('{$filename}')"
+            );
         }
 
         $subRegexes = [
@@ -204,12 +206,16 @@ class CsvReader extends BaseTableReader
             }
         }
         if (!$validLineFound) {
-            throw new \Exception(__METHOD__ . "(string \$filename): void => invalid file-content ('{$filename}').");
+            throw new CsvReaderException(
+                __METHOD__ . "(string \$filename): void => invalid file-content ('{$filename}')."
+            );
         }
 
         $csvFile = fopen($filename, 'r');
         if ($csvFile === false) {
-            throw new \Exception(__METHOD__ . "(string \$filename): void => error opening the file ('{$filename}').");
+            throw new CsvReaderException(
+                __METHOD__ . "(string \$filename): void => error opening the file ('{$filename}')."
+            );
         }
 
         $this->csvFile = $csvFile;
@@ -332,7 +338,7 @@ class CsvReader extends BaseTableReader
     {
         $csvFile = @fopen($filename, 'r');
         if ($csvFile === false) {
-            throw new \Exception(
+            throw new CsvReaderException(
                 __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
                     " => error opening the format-file ('{$filename}')."
             );
@@ -347,7 +353,7 @@ class CsvReader extends BaseTableReader
         $this->readNextLineInternal($fields, $csvFile, $csvSeparator, $lineEnding);
 
         if (count($fields) === 0) {
-            throw new \Exception(
+            throw new CsvReaderException(
                 __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
                     " => error parsing the format-file ('{$filename}')."
             );
@@ -385,7 +391,7 @@ class CsvReader extends BaseTableReader
                 if ($lengthHeaderIndex >= 0) {
                     $field = trim($fields[$lengthHeaderIndex]);
                     if (!is_numeric($field)) {
-                        throw new \Exception(
+                        throw new CsvReaderException(
                             __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
                                 " => error parsing a value ({$field}) to integer in format-file ('{$filename}')."
                         );
@@ -394,7 +400,7 @@ class CsvReader extends BaseTableReader
                 } elseif ($startHeaderIndex >= 0 && $stopHeaderIndex >= 0) {
                     $field = trim($fields[$startHeaderIndex]);
                     if (!is_numeric($field)) {
-                        throw new \Exception(
+                        throw new CsvReaderException(
                             __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
                                 " => error parsing a value ({$field}) to integer in format-file ('{$filename}')."
                         );
@@ -403,7 +409,7 @@ class CsvReader extends BaseTableReader
 
                     $field = trim($fields[$stopHeaderIndex]);
                     if (!is_numeric($field)) {
-                        throw new \Exception(
+                        throw new CsvReaderException(
                             __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
                                 " => error parsing a value ({$field}) to integer in format-file ('{$filename}')."
                         );
@@ -427,7 +433,7 @@ class CsvReader extends BaseTableReader
         } else {
             foreach ($fields as $it) {
                 if (!is_numeric($it)) {
-                    throw new \Exception(
+                    throw new CsvReaderException(
                         __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
                             " => error parsing a value ({$it}) to integer in format-file ('{$filename}')."
                     );
@@ -467,14 +473,14 @@ class CsvReader extends BaseTableReader
     {
         $tempFilename = tempnam(sys_get_temp_dir(), 'csv');
         if ($tempFilename === false) {
-            throw new \Exception(
+            throw new CsvReaderException(
                 __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
                     ' => temporary file could not been created.'
             );
         }
         $fd = fopen($tempFilename, 'w');
         if ($fd === false) {
-            throw new \Exception(
+            throw new CsvReaderException(
                 __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
                     ' => could not load csv-string.'
             );
@@ -482,7 +488,7 @@ class CsvReader extends BaseTableReader
 
         if (fwrite($fd, $content) === false) {
             fclose($fd);
-            throw new \Exception(
+            throw new CsvReaderException(
                 __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
                     ' => could not write temporary csv-file.'
             );
@@ -514,18 +520,20 @@ class CsvReader extends BaseTableReader
     {
         $tempFilename = tempnam(sys_get_temp_dir(), 'csv');
         if ($tempFilename === false) {
-            throw new \Exception(__METHOD__ . '(string $content): void => temporary file could not been created.');
+            throw new CsvReaderException(
+                __METHOD__ . '(string $content): void => temporary file could not been created.'
+            );
         }
         $fd = fopen($tempFilename, 'w');
         if ($fd === false) {
-            throw new \Exception(__METHOD__ . '(string $content): void => could not load csv-string.');
+            throw new CsvReaderException(__METHOD__ . '(string $content): void => could not load csv-string.');
         }
 
         $this->tempFilename = $tempFilename;
 
         if (fwrite($fd, $content) === false) {
             fclose($fd);
-            throw new \Exception(__METHOD__ . '(string $content): void => could not write temporary csv-file.');
+            throw new CsvReaderException(__METHOD__ . '(string $content): void => could not write temporary csv-file.');
         }
         fclose($fd);
 
