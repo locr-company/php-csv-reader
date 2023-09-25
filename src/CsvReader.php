@@ -256,12 +256,10 @@ class CsvReader extends BaseTableReader
                     }
                 }
 
-                if ($allBytesAreEqual) {
-                    // maybe its UTF-32 (LE) and not UTF-16 (LE)
-                    if (count($bomData) > $this->bomLength) {
-                        $this->bomLength = count($bomData);
-                        $this->bomEncoding = $bomEncoding;
-                    }
+                // maybe its UTF-32 (LE) and not UTF-16 (LE)
+                if ($allBytesAreEqual && count($bomData) > $this->bomLength) {
+                    $this->bomLength = count($bomData);
+                    $this->bomEncoding = $bomEncoding;
                 }
             }
 
@@ -336,11 +334,11 @@ class CsvReader extends BaseTableReader
      */
     public function loadFormatFile(string $filename, bool $detectAndSetHeaderFields = false): void
     {
+        $methodSignature = __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void";
         $csvFile = @fopen($filename, 'r');
         if ($csvFile === false) {
             throw new CsvReaderException(
-                __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
-                    " => error opening the format-file ('{$filename}')."
+                $methodSignature . " => error opening the format-file ('{$filename}')."
             );
         }
 
@@ -352,11 +350,8 @@ class CsvReader extends BaseTableReader
         $this->loadFileInternal($csvFile, $csvSeparator, $fieldsCount, $lineEnding);
         $this->readNextLineInternal($fields, $csvFile, $csvSeparator, $lineEnding);
 
-        if (count($fields) === 0) {
-            throw new CsvReaderException(
-                __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
-                    " => error parsing the format-file ('{$filename}')."
-            );
+        if (empty($fields)) {
+            throw new CsvReaderException($methodSignature . " => error parsing the format-file ('{$filename}').");
         }
 
         // check if first line is header with length, start, stop, field...
@@ -392,7 +387,7 @@ class CsvReader extends BaseTableReader
                     $field = trim($fields[$lengthHeaderIndex]);
                     if (!is_numeric($field)) {
                         throw new CsvReaderException(
-                            __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
+                            $methodSignature .
                                 " => error parsing a value ({$field}) to integer in format-file ('{$filename}')."
                         );
                     }
@@ -401,7 +396,7 @@ class CsvReader extends BaseTableReader
                     $field = trim($fields[$startHeaderIndex]);
                     if (!is_numeric($field)) {
                         throw new CsvReaderException(
-                            __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
+                            $methodSignature .
                                 " => error parsing a value ({$field}) to integer in format-file ('{$filename}')."
                         );
                     }
@@ -410,7 +405,7 @@ class CsvReader extends BaseTableReader
                     $field = trim($fields[$stopHeaderIndex]);
                     if (!is_numeric($field)) {
                         throw new CsvReaderException(
-                            __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
+                            $methodSignature .
                                 " => error parsing a value ({$field}) to integer in format-file ('{$filename}')."
                         );
                     }
@@ -434,7 +429,7 @@ class CsvReader extends BaseTableReader
             foreach ($fields as $it) {
                 if (!is_numeric($it)) {
                     throw new CsvReaderException(
-                        __METHOD__ . "(string \$filename, bool \$detectAndSetHeaderFields = false): void" .
+                        $methodSignature .
                             " => error parsing a value ({$it}) to integer in format-file ('{$filename}')."
                     );
                 }
@@ -471,27 +466,19 @@ class CsvReader extends BaseTableReader
      */
     public function loadFormatString(string $content, bool $detectAndSetHeaderFields = false): void
     {
+        $methodSignature = __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void';
         $tempFilename = tempnam(sys_get_temp_dir(), 'csv');
         if ($tempFilename === false) {
-            throw new CsvReaderException(
-                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
-                    ' => temporary file could not been created.'
-            );
+            throw new CsvReaderException($methodSignature . ' => temporary file could not been created.');
         }
         $fd = fopen($tempFilename, 'w');
         if ($fd === false) {
-            throw new CsvReaderException(
-                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
-                    ' => could not load csv-string.'
-            );
+            throw new CsvReaderException($methodSignature . ' => could not load csv-string.');
         }
 
         if (fwrite($fd, $content) === false) {
             fclose($fd);
-            throw new CsvReaderException(
-                __METHOD__ . '(string $content, bool $detectAndSetHeaderFields = false): void' .
-                    ' => could not write temporary csv-file.'
-            );
+            throw new CsvReaderException($methodSignature . ' => could not write temporary csv-file.');
         }
         fclose($fd);
 
@@ -630,10 +617,8 @@ class CsvReader extends BaseTableReader
                 if (isset($lineEnding[0]) && $c === $lineEnding[0]) {
                     if (isset($lineEnding[1])) {
                         $nextChar = '';
-                        if (($nextChar = fgetc($csvFile)) !== false) {
-                            if ($nextChar === $lineEnding[1]) {
-                                $lineEndingReached = true;
-                            }
+                        if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
+                            $lineEndingReached = true;
                         }
                         if (!$lineEndingReached) {
                             fseek($csvFile, -1, SEEK_CUR);
@@ -685,10 +670,8 @@ class CsvReader extends BaseTableReader
                     if (isset($lineEnding[0]) && $c === $lineEnding[0]) {
                         if (isset($lineEnding[1])) {
                             $nextChar = '';
-                            if (($nextChar = fgetc($csvFile)) !== false) {
-                                if ($nextChar === $lineEnding[1]) {
-                                    $lineEndingReached = true;
-                                }
+                            if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
+                                $lineEndingReached = true;
                             }
                             if (!$lineEndingReached) {
                                 fseek($csvFile, -1, SEEK_CUR);
@@ -728,10 +711,8 @@ class CsvReader extends BaseTableReader
                                 $lineEndingReached = false;
                                 if (isset($lineEnding[0]) && $nextChar === $lineEnding[0]) {
                                     if (isset($lineEnding[1])) {
-                                        if (($nextChar = fgetc($csvFile)) !== false) {
-                                            if ($nextChar === $lineEnding[1]) {
-                                                $lineEndingReached = true;
-                                            }
+                                        if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
+                                            $lineEndingReached = true;
                                         }
                                         if (!$lineEndingReached) {
                                             fseek($csvFile, -1, SEEK_CUR);
@@ -757,11 +738,7 @@ class CsvReader extends BaseTableReader
             if (count($fields) === 1 && isset($fields[0])) {
                 $firstField = (string)$fields[0];
                 if (strlen($firstField) === 0) {
-                    if ($this->ignoreEmptyLines) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return !$this->ignoreEmptyLines;
                 }
             }
 
@@ -774,7 +751,7 @@ class CsvReader extends BaseTableReader
             }
         }
 
-        if (count($fields) === 0) {
+        if (empty($fields)) {
             return false;
         }
 
