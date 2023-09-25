@@ -601,23 +601,17 @@ class CsvReader extends BaseTableReader
     {
         $line = '';
         while (($c = fgetc($csvFile)) !== false) {
-            $lineEndingReached = false;
             if (isset($lineEnding[0]) && $c === $lineEnding[0]) {
                 if (isset($lineEnding[1])) {
                     $nextChar = '';
                     if (($nextChar = fgetc($csvFile)) !== false && $nextChar === $lineEnding[1]) {
-                        $lineEndingReached = true;
-                    }
-                    if (!$lineEndingReached) {
+                        break;
+                    } else {
                         fseek($csvFile, -1, SEEK_CUR);
                     }
                 } else {
-                    $lineEndingReached = true;
+                    break;
                 }
-            }
-
-            if ($lineEndingReached) {
-                break;
             }
 
             $line .= $c;
