@@ -190,9 +190,9 @@ class CsvReader extends BaseTableReader
         foreach ($output as $line) {
             if (preg_match($validFileRegex, $line, $lineMatch)) {
                 $validLineFound = true;
-                if ((isset($lineMatch[3]) && trim($lineMatch[3]) === '(with BOM)')) {
+                if (isset($lineMatch[3]) && trim($lineMatch[3]) === '(with BOM)') {
                     $withBOM = true;
-                } elseif ((isset($lineMatch[5]) && trim($lineMatch[5]) === '(with BOM)')) {
+                } elseif (isset($lineMatch[5]) && trim($lineMatch[5]) === '(with BOM)') {
                     $withBOM = true;
                 }
                 break;
