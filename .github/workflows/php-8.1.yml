@@ -45,7 +45,7 @@ jobs:
       run: composer run-script phpcs
 
     - name: Run Static Analyzer (phpstan)
-      run: composer run-script phpstan
+      run: composer run-script phpstan-8.1
 
     - name: Run Unit Tests (phpunit)
       run: composer run-script test
