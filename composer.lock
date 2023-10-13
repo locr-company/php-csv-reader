@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "locr-company/base-table-reader",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/locr-company/php-base-table-reader.git",
-                "reference": "8996d4ad05a777df6f37ac3de5a473fabfcf7424"
+                "reference": "885bbe6ddb542eb4a9cfb5e4f642cb7690b9d4d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/locr-company/php-base-table-reader/zipball/8996d4ad05a777df6f37ac3de5a473fabfcf7424",
-                "reference": "8996d4ad05a777df6f37ac3de5a473fabfcf7424",
+                "url": "https://api.github.com/repos/locr-company/php-base-table-reader/zipball/885bbe6ddb542eb4a9cfb5e4f642cb7690b9d4d4",
+                "reference": "885bbe6ddb542eb4a9cfb5e4f642cb7690b9d4d4",
                 "shasum": ""
             },
             "require": {
@@ -36,7 +36,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "proprietary"
+                "MIT"
             ],
             "authors": [
                 {
@@ -51,9 +51,9 @@
             ],
             "support": {
                 "issues": "https://github.com/locr-company/php-base-table-reader/issues",
-                "source": "https://github.com/locr-company/php-base-table-reader/tree/1.0.1"
+                "source": "https://github.com/locr-company/php-base-table-reader/tree/1.0.2"
             },
-            "time": "2023-06-15T14:22:24+00:00"
+            "time": "2023-10-13T15:06:52+00:00"
         }
     ],
     "packages-dev": [
