@@ -385,7 +385,7 @@ class CsvReader extends BaseTableReader
                         );
                     }
                     $intValue = (int)$field;
-                } elseif ($startHeaderIndex >= 0 && $stopHeaderIndex >= 0) {
+                } else {
                     $field = trim($fields[$startHeaderIndex]);
                     if (!is_numeric($field)) {
                         throw new CsvReaderException(
