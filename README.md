@@ -13,7 +13,7 @@ composer require locr-company/csv-reader
 
 # 2. How to use
 
-Here are the [Docs](https://locr-company.github.io/php-csv-reader/).
+Here are the [Docs](https://locr-company.github.io/php-csv-reader/docs/phpdoc/html/).
 
 ```php
 <?php
