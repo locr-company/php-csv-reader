@@ -44,7 +44,7 @@
             "@dev:analyze",
             "@dev:test:unit"
         ],
-        "dev:test:coverage:ci": "phpunit --display-warnings --coverage-clover test-results/phpunit.clover.xml",
+        "dev:test:coverage:ci": "phpunit --display-warnings --coverage-clover test-results/clover.xml",
         "dev:test:coverage:html": "phpunit --display-warnings --coverage-html test-results/html",
         "dev:test:unit": "phpunit --display-warnings",
         "test": "@dev:test",
