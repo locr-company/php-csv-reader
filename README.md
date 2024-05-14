@@ -42,6 +42,5 @@ Clone the repository
 
 ```bash
 git clone git@github.com:locr-company/php-csv-reader.git
-cd php-csv-reader/.git/hooks && ln -s ../../git-hooks/* . && cd ../..
-composer install
+cd php-csv-reader && composer install
 ```

@@ -42,10 +42,10 @@ jobs:
         coverage: pcov
 
     - name: Run CodeSniffer (phpcs)
-      run: composer run-script phpcs
+      run: composer run-script dev:lint:phpcs
 
     - name: Run Static Analyzer (phpstan)
-      run: composer run-script phpstan-8.3
+      run: composer run-script dev:analyze:phpstan-8.3
 
     - name: Run Unit Tests (phpunit)
-      run: composer run-script test
+      run: composer run-script dev:test:unit

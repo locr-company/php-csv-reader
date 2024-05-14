@@ -47,6 +47,7 @@ print $separator; // ;
 
 
 
+
 ***
 
 ### loadFile
@@ -76,6 +77,7 @@ $csvReader->loadFile('file.csv');
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$filename` | **string** |  |
+
 
 
 
@@ -111,6 +113,7 @@ $csvReader->loadFormatFile('file_format.csv');
 |-----------|------|-------------|
 | `$filename` | **string** |  |
 | `$detectAndSetHeaderFields` | **bool** |  |
+
 
 
 
@@ -160,6 +163,7 @@ $csvReader->loadFormatString($csvFormat, true);
 
 
 
+
 ***
 
 ### loadString
@@ -193,6 +197,7 @@ print $rows[0][2]; // baz
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `$content` | **string** |  |
+
 
 
 
@@ -233,8 +238,9 @@ print $rows[0][2]; // world
 
 
 
+
 ***
 
 
 ***
-> Automatically generated from source code comments on 2023-09-25 using [phpDocumentor](http://www.phpdoc.org/) and [saggre/phpdocumentor-markdown](https://github.com/Saggre/phpDocumentor-markdown)
+> Automatically generated on 2024-05-14
