@@ -52,8 +52,8 @@
             "@phpdoc-html",
             "@phpdoc-markdown"
         ],
-        "phpdoc-html": "phpdoc --target=docs/phpdoc/html",
-        "phpdoc-markdown": "phpdoc --target=docs/phpdoc/markdown --template=./vendor/saggre/phpdocumentor-markdown/themes/markdown"
+        "phpdoc-html": "./phpdoc --target=docs/phpdoc/html",
+        "phpdoc-markdown": "./phpdoc --target=docs/phpdoc/markdown --template=./vendor/saggre/phpdocumentor-markdown/themes/markdown"
     },
     "autoload": {
         "psr-4": {
