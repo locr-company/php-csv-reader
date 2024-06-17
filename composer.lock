@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb87b6bee000a635301e3f528b2412bf",
+    "content-hash": "cd00a6e0e7136b3cf86e76840529c890",
     "packages": [
         {
             "name": "locr-company/base-table-reader",
@@ -3158,7 +3158,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "ext-iconv": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
