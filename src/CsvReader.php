@@ -5,10 +5,6 @@ declare(strict_types=1);
 namespace Locr\Lib;
 
 /**
- * fdgfsdpohfj
- */
-
-/**
  * @property-read string $BOMEncoding the detected BOM encoding (see https://de.wikipedia.org/wiki/Byte_Order_Mark)
  * @property-read int $BOMLength the detected BOM length
  * @property-read array<int, int> $FixedWidthFields an array of int's that where loaded by the loadFormatFile()-method
