@@ -14,8 +14,9 @@
         }
     ],
     "require": {
-        "locr-company/base-table-reader": "^1.0",
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "ext-iconv": "*",
+        "locr-company/base-table-reader": "^1.0"
     },
     "require-dev": {
         "captainhook/captainhook": "^5.23",
