@@ -1,5 +1,5 @@
 ![php](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)
-[![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-csv-reader/php.yml)](https://github.com/locr-company/php-csv-reader/actions/workflows/php-8.1.yml)
+[![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-csv-reader/php.yml)](https://github.com/locr-company/php-csv-reader/actions/workflows/php.yml)
 [![codecov](https://codecov.io/gh/locr-company/php-csv-reader/branch/main/graph/badge.svg?token=bhxfQglKff)](https://codecov.io/gh/locr-company/php-csv-reader)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=locr-company_php-csv-reader&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=locr-company_php-csv-reader)
 [![github_tag](https://img.shields.io/github/v/tag/locr-company/php-csv-reader)](https://github.com/locr-company/php-csv-reader/tags)
