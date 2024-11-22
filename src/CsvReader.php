@@ -575,7 +575,7 @@ class CsvReader extends BaseTableReader
     }
 
     /**
-     * @param string[] $fields
+     * @param array<int, string> $fields
      */
     private function readNextLine(array &$fields): bool
     {
@@ -591,7 +591,7 @@ class CsvReader extends BaseTableReader
     }
 
     /**
-     * @param string[] $fields
+     * @param array<int, string> $fields
      * @param resource $csvFile
      */
     private function readFixedWidthFields(array &$fields, $csvFile, string $lineEnding): bool
@@ -638,7 +638,7 @@ class CsvReader extends BaseTableReader
     }
 
      /**
-     * @param string[] $fields
+     * @param array<int, string> $fields
      * @param resource $csvFile
      */
     private function readVariableWidthFields(array &$fields, $csvFile, string $csvSeparator, string $lineEnding): bool
@@ -672,7 +672,7 @@ class CsvReader extends BaseTableReader
 
                 if ($c === $csvSeparator || $lineEndingReached) {
                     if (!mb_check_encoding($field, 'UTF-8')) {
-                        $field = iconv('ISO-8859-1', 'UTF-8', $field);
+                        $field = iconv('ISO-8859-1', 'UTF-8', $field) ?: $field;
                     }
                     $fields[] = $field;
                     $field = '';
@@ -691,7 +691,7 @@ class CsvReader extends BaseTableReader
                             continue;
                         } else {
                             if (!mb_check_encoding($field, 'UTF-8')) {
-                                $field = iconv('ISO-8859-1', 'UTF-8', $field);
+                                $field = iconv('ISO-8859-1', 'UTF-8', $field) ?: $field;
                             }
                             $fields[] = $field;
                             $field = '';
@@ -733,7 +733,7 @@ class CsvReader extends BaseTableReader
 
         if ($field !== '') { // last line, last field
             if (!mb_check_encoding($field, 'UTF-8')) {
-                $field = iconv('ISO-8859-1', 'UTF-8', $field);
+                $field = iconv('ISO-8859-1', 'UTF-8', $field) ?: $field;
             }
             $fields[] = $field;
             $field = '';
@@ -743,7 +743,7 @@ class CsvReader extends BaseTableReader
     }
 
     /**
-     * @param string[] $fields
+     * @param array<int, string> $fields
      * @param resource $csvFile
      */
     private function readNextLineInternal(array &$fields, $csvFile, string $csvSeparator, string $lineEnding): bool
@@ -790,7 +790,7 @@ class CsvReader extends BaseTableReader
     }
 
     /**
-     * @param string[] $fields
+     * @param array<int, string> $fields
      */
     private function stripTags(array &$fields): void
     {
@@ -799,9 +799,7 @@ class CsvReader extends BaseTableReader
         }
 
         foreach ($fields as $key => $value) {
-            if (is_string($value)) {
-                $fields[$key] = strip_tags($value);
-            }
+            $fields[$key] = strip_tags($value);
         }
     }
 }
