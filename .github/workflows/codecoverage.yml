@@ -1,9 +1,7 @@
-name: PHP 8.2
+name: CodeCoverage
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 permissions:
@@ -32,20 +30,17 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-    
     - name: Setup PHP with PCOV
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.4'
         coverage: pcov
 
-    - name: Run CodeSniffer (phpcs)
-      run: composer run-script dev:lint:phpcs
+    - name: Run tests with CodeCoverage
+      run: composer run-script dev:test:coverage:ci
 
-    - name: Run Static Analyzer (phpstan)
-      run: composer run-script dev:analyze:phpstan-8.2
-
-    - name: Run Unit Tests (phpunit)
-      run: composer run-script dev:test:unit
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: locr-company/php-csv-reader
