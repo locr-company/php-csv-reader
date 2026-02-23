@@ -63,16 +63,16 @@
     "packages-dev": [
         {
             "name": "captainhook/captainhook",
-            "version": "5.28.2",
+            "version": "5.28.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/captainhook-git/captainhook.git",
-                "reference": "2adbc8fea26823ecf52578998de5daf57846872f"
+                "reference": "5d35b249f3843ef36ead119f4347e649278ad6d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/captainhook-git/captainhook/zipball/2adbc8fea26823ecf52578998de5daf57846872f",
-                "reference": "2adbc8fea26823ecf52578998de5daf57846872f",
+                "url": "https://api.github.com/repos/captainhook-git/captainhook/zipball/5d35b249f3843ef36ead119f4347e649278ad6d8",
+                "reference": "5d35b249f3843ef36ead119f4347e649278ad6d8",
                 "shasum": ""
             },
             "require": {
@@ -135,7 +135,7 @@
             ],
             "support": {
                 "issues": "https://github.com/captainhook-git/captainhook/issues",
-                "source": "https://github.com/captainhook-git/captainhook/tree/5.28.2"
+                "source": "https://github.com/captainhook-git/captainhook/tree/5.28.3"
             },
             "funding": [
                 {
@@ -143,7 +143,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-15T14:36:43+00:00"
+            "time": "2026-02-16T14:08:58+00:00"
         },
         {
             "name": "captainhook/hook-installer",
